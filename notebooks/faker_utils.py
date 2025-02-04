@@ -1,6 +1,7 @@
 import random
 import pandas as pd
 from faker import Faker
+from collections import defaultdict
 
 
 class FakeDemographicDataGenerator:
@@ -13,41 +14,48 @@ class FakeDemographicDataGenerator:
         """
         self.config = config
         self.num_records = num_records
-        self.fake = Faker()
 
-    def generate_record(self):
+    def generate(self):
         """Generate a single fake demographic record based on the config."""
-        record = {}
+        fake = Faker()
+        records = defaultdict(list)
 
-        for feature, options in self.config.items():
-            if feature == "name":
-                record[feature] = self.fake.name()
-            elif feature == "age":
-                record[feature] = random.randint(options["min"], options["max"])
-            elif feature == "gender":
-                record[feature] = random.choice(options)
-            elif feature == "email":
-                record[feature] = self.fake.email()
-            elif feature == "phone":
-                record[feature] = self.fake.phone_number()
-            elif feature == "address":
-                record[feature] = self.fake.address()
-            elif feature == "city":
-                record[feature] = self.fake.city()
-            elif feature == "country":
-                record[feature] = self.fake.country()
-            elif feature == "income_level":
-                record[feature] = random.choice(options)
-            elif feature == "investment_experience":
-                record[feature] = random.choice(options)
-            elif feature == "risk_aversion":
-                record[feature] = random.choice(options)
-            elif feature == "investment_preference":
-                record[feature] = random.choice(options)
-
-        return record
-
-    def generate_data(self):
-        """Generate a pandas DataFrame with fake demographic records."""
-        records = [self.generate_record() for _ in range(self.num_records)]
+        for _ in range(self.num_records):
+            for feature, options in self.config.items():
+                if options:
+                    if isinstance(options, list):
+                        records[feature].append(fake.random_element(elements=options))
+                    elif isinstance(options, dict):
+                        records[feature].append(fake.random_int(min=options['min'], max=options['max']))
+                    else:
+                        print(f"Invalid options for Faker input {feature}: {options}")
+                else:
+                    if feature == 'name':
+                        records[feature].append(fake.name())
+                    elif feature == 'address':
+                        records[feature].append(fake.address())
+                    elif feature == 'phone_number':
+                        records[feature].append(fake.phone_number())
+                    elif feature == 'occupations':
+                        records[feature].append(fake.job())
+                    elif feature == 'city':
+                        records[feature].append(fake.city())
+                    elif feature == 'country':
+                        records[feature].append(fake.country())
+        
         return pd.DataFrame(records)
+
+
+def generate_product_data(products, products_tiers):
+    fake = Faker()
+    prods = []
+
+    for prod, des in products.items():
+        for tier in products_tiers:
+            prods.append({
+                'product_id': fake.random_int(min=10000, max=99999),
+                'product_name': prod,
+                'tier': tier,
+                'description': des
+            })
+    return pd.DataFrame(prods)
