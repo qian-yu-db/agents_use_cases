@@ -1,0 +1,3 @@
+catalog: fins_genai
+llm_endpoint: databricks/qyu_gtp4o_mini
+schema: agents
