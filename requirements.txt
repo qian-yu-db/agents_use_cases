@@ -1,6 +1,6 @@
 pydantic
-crewai==0.85
-crewai_tools==0.14.0
+crewai
+crewai_tools
 mlflow
 databricks-sdk
 openai

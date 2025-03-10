@@ -174,3 +174,4 @@ cython_debug/
 # mlflow local files
 mlruns/
 mlartifacts/
+.databricks
