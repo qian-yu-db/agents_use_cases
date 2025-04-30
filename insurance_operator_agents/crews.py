@@ -73,7 +73,7 @@ class ClaimCrew:
     @agent
     def claim_specialist(self) -> Agent:
         return Agent(
-            config=self.agents_config['cliam_specialist'],
+            config=self.agents_config['claim_specialist'],
             tools=[search_claim_details_tool, search_customer_policy_details_tool],
             verbose=True,
             llm=llm
