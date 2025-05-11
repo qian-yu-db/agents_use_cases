@@ -1,6 +1,7 @@
-crewai==0.85
-crewai_tools==0.14.0
-mlflow==2.20.0
+pydantic
+crewai
+crewai_tools
+mlflow
 databricks-sdk
 openai
 Faker
@@ -10,4 +11,12 @@ git+https://github.com/unitycatalog/unitycatalog.git#subdirectory=ai/integration
 pandas
 pyspark
 python-dotenv
-databricks-connect==15.4.0
+databricks-connect
+notebook
+ipykernel
+langchain
+langgraph<0.3.0
+databricks-langchain
+databricks-agents
+unitycatalog-crewai
+unitycatalog-crewai[databricks]

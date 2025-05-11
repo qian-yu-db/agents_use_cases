@@ -16,7 +16,7 @@ class FakeDemographicDataGenerator:
         self.num_records = num_records
 
     def generate(self):
-        """Generate a single fake demographic record based on the config."""
+        """Generate a single fake demographic record based on the global_config."""
         fake = Faker()
         records = defaultdict(list)
 
