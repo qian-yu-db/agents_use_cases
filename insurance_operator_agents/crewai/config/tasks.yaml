@@ -30,24 +30,7 @@ clarification_task:
     Be conversational and helpful while guiding them to provide more details.
   expected_output: >
     A response asking for clarification
-
-claim_task:
-  description: >
-    Process this claim-related customer query:
-    Query: {current_query}
-    policy number: {policy_number}
-            
-    Previous conversation: {conversation_history}
-            
-    If you have a policy number, 
-    - use the search_policy_details_by_policy_number tool to retrieve customer profile and policy information.
-    - use the search_claim_by_policy_number tool to retrieve existing claim information.
-            
-    Provide a helpful, detailed response about their claim. If you don't have their
-    policy_number, explain that you need it to access their claim information.
-  expected_output: >
-    A helpful response to the customer's claim query
-  agent: claim_specialist
+  agent: triage_specialist
 
 policy_task:
   description: >
@@ -64,3 +47,22 @@ policy_task:
   expected_output: > 
     A helpful response to the customer's policy query
   agent: policy_specialist
+
+claim_task:
+  description: >
+    Process this claim-related customer query:
+    Query: {current_query}
+    policy number: {policy_number}
+    
+    Previous conversation: {conversation_history}
+    
+    If you have a policy number, 
+    - use the search_policy_details_by_policy_number tool to retrieve customer profile and policy information.
+    - use the search_claim_by_policy_number tool to retrieve existing claim information.
+    
+    Provide a helpful, detailed response about their claim. If you don't have their
+    policy_number, explain that you need it to access their claim information.
+  expected_output: >
+    A helpful response to the customer's claim query
+  agent: claim_specialist
+

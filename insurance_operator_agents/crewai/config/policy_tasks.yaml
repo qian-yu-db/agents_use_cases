@@ -1,0 +1,15 @@
+policy_task:
+  description: >
+    Answer this policy-related customer query:
+    Query: {current_query}
+            
+    Previous conversation: {conversation_history}
+            
+    First, determine what type of policy they're asking about (auto, home, motocycle, life, etc.).
+    Then use the search_policy_doc tool to look up relevant information.
+            
+    Provide a helpful, detailed response about the policy. Include specific coverage
+    details, limitations, and any other relevant information.
+  expected_output: > 
+    A helpful response to the customer's policy query
+  agent: policy_specialist

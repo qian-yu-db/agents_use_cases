@@ -1,5 +1,5 @@
 pydantic
-crewai
+crewai==0.102
 crewai_tools
 mlflow
 databricks-sdk
@@ -20,3 +20,4 @@ databricks-langchain
 databricks-agents
 unitycatalog-crewai
 unitycatalog-crewai[databricks]
+openai-agents

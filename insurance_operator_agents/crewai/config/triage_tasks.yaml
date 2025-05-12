@@ -1,0 +1,33 @@
+triage_task:
+  description: >
+    Analyze the following customer query to determine the type:
+    Customer Query: {current_query}
+
+    Previous conversation: {conversation_history}
+
+    Determine if the customer intent is:
+    1. A claim-related query such as existing claims status, filing new claims
+    2. A policy-related query such as  coverage, terms, conditions
+    3. A general inquiry that needs more information
+
+    Return ONLY ONE of these exact categories: "claim", "policy", or "general"
+  expected_output: >
+    The category of the user query (claim, policy, or general)
+  agent: triage_specialist
+
+clarification_task:
+  description: >
+    The customer query was categorized as general or unclear:
+    Query: {current_query}
+    
+    Previous conversation: {conversation_history}
+    
+    Generate a helpful response that:
+    1. Acknowledges their query
+    2. Asks for specific clarification
+    3. Offers suggestions about whether they need help with claims or policy information
+    
+    Be conversational and helpful while guiding them to provide more details.
+  expected_output: >
+    A response asking for clarification
+  agent: triage_specialist

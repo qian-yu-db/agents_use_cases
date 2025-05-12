@@ -1,0 +1,44 @@
+ml_document_content_organization_task:
+  description: >
+    1. Given unity catalog: {catalog}, schema: {schema} and model: {model}
+    2. Use the ml_assetn_collect_tool to save model assets in a databricks volume location under the same unity catalog at the 
+    model
+    3. Use the model_attributes_table_tool to pull model attributes using mlflow API and write model attribute tables to a markdown file in the same databricks volume path along with other model assets
+    4. Use the image_to_markdown_tool to write a markdown file with the link to image file and save in the same databricks volume path
+    5. Use the notebook_to_markdown_tool to write a mardown file with notebook content and save in the same databricks volume path
+  expected_output: >
+    A databricks volume path with the model assets, model attribute table, image, notebook markdown files saved
+  agent: mlops_specialist
+
+ml_document_planning_outline_task:
+  description: >
+    1. Use the volume location path from ml_document_content_organization_task to find files
+    2. Use the directory read tool to find markdown, yaml, json, other text files
+    3. Use the file read tool to read the markdown, yaml, json files
+    4. Organize the content and create a plan for a machine learning technical document which 
+       will be served as an engineering document for the future data scientist or machine learning engineers
+       who want to understand, rebuild and make changes to the model
+  expected_output: >
+    A comprehensive machine learning technical document plan
+  agent: technical_document_planner
+
+ml_document_write_task:
+  description: >
+    1. Use the plan from ml_document_panning_outline_task craft a detailed technical document on the machine learning model.
+    2. Use the file read tool to pull content from markdown, yaml, json, other text files
+    3. make sure sections and subtitle are properly named for technical engineering documentation.
+    4. Ensure each section has both a high-level description and technical details.
+    6. Proofread for grammatical errors
+  expected_output: >
+    A well-written machine learning technical document in markdown
+  agent: technical_document_writer
+
+ml_document_edit_publish_task:
+  description: >
+    1. Review the technical document draft from ml_document_write_task for grammar, style, and accuracy.
+    2. Ensure the content is polished and error-free.
+    3. Use the file read tool to read files
+    4. Use the file write tool to save the final version to the volume location path
+  expected_output: >
+    A final version of the machine learning technical document in markdown
+  agent: technical_document_editor

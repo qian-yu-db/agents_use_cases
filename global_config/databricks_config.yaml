@@ -1,3 +1,6 @@
 catalog: fins_genai
-schema: agents
-llm_endpoint: databricks/qyu_gtp4o_mini
+schema_agents: agents
+schema_insurance_agents: insurance_agent
+llm_endpoint_llama3p3_70B: databricks/databricks-meta-llama-3-3-70b-instruct
+llm_endpoint_llama4_maverick: databricks/databricks-llama-4-maverick
+llm_endpoint_sonnet_3p7: databricks/databricks-claude-3-7-sonnet
