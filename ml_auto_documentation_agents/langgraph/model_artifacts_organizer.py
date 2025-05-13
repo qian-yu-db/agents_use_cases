@@ -29,9 +29,16 @@ class ModelArtifactOrganizer:
         destination_path = self.create_uc_artifact_folder(
             volume_path=self.volume_path, folder_name=self.model
         )
-        mlflow.artifacts.download_artifacts(
-            artifact_uri=f"runs:/{run_id}/", dst_path=destination_path
-        )
+
+        try:
+            logger.info(f"Downloading artifacts for run_id: {run_id}")
+            mlflow.artifacts.download_artifacts(
+                artifact_uri=f"runs:/{run_id}/", dst_path=destination_path
+            )
+            logger.info(f"Artifacts downloaded to: {destination_path}")
+        except Exception as e:
+            logger.error(f"Error downloading artifacts: {e}")
+            raise ValueError(f"Error downloading artifacts: {e}")
         return destination_path
 
     @staticmethod
@@ -97,7 +104,8 @@ class ModelArtifactOrganizer:
         png_files = [f for f in os.listdir(folder_path) if f.endswith(".png")]
         markdown_content = "\n\n".join(
             [
-                f"![{os.path.splitext(f)[0]}]({os.path.join(folder_path, f)})"
+                f"### {os.path.splitext(f)[0]}]\n"
+                f"![image]({os.path.join(folder_path, f)})"
                 for f in png_files
             ]
         )
