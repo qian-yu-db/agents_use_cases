@@ -70,7 +70,8 @@ claims_detail_retrieval_agent = Agent[UserInfo](
     tools=[
         search_claims_details_by_policy_no,
     ],
-    model="gpt-4o",
+    #model="gpt-4o",
+    model=OpenAIChatCompletionsModel(model=MODEL, openai_client=client)
 )
 
 policy_qa_agent = Agent[UserInfo](
@@ -86,7 +87,8 @@ policy_qa_agent = Agent[UserInfo](
         "3. If you cannot answer the question, transfer back to the triage agent. \n"
     ),
     tools=[policy_docs_vector_search],
-    model="gpt-4o",
+    #model="gpt-4o",
+    model=OpenAIChatCompletionsModel(model=MODEL, openai_client=client)
 )
 
 triage_agent = Agent[UserInfo](
@@ -98,7 +100,8 @@ triage_agent = Agent[UserInfo](
         "If the customer does not have anymore questions, wish them a goodbye and a good rest of their day. "
     ),
     handoffs=[claims_detail_retrieval_agent, policy_qa_agent],
-    model="gpt-4o",
+    #model="gpt-4o",
+    model=OpenAIChatCompletionsModel(model=MODEL, openai_client=client)
 )
 
 class InsuranceChatAgent(ChatAgent):
