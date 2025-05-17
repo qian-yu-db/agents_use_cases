@@ -1,6 +1,11 @@
 import os
 from typing import List
 from langchain_core.documents import Document
+import logging
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("file_management_utils")
 
 
 def recursive_file_loader(
@@ -30,6 +35,8 @@ def recursive_file_loader(
                     )
                     documents.append(doc)
                 except Exception as e:
-                    print(f"Error reading {file_path}: {e}")
+                    logger.error(f"Error reading {file_path}: {e}")
 
+        logger.info(f"Loaded {len(documents)} documents from {directory_path}")
+        logger.info(f"Documents: {documents}")
     return documents

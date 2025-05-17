@@ -9,7 +9,7 @@ import nbformat
 from nbconvert import MarkdownExporter
 import logging
 
-logging.basicConfig()
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("model_artifact_organizer")
 
 
@@ -102,10 +102,9 @@ class ModelArtifactOrganizer:
     def image_file_to_md(self) -> str:
         folder_path = f"{self.volume_path}/{self.model}"
         png_files = [f for f in os.listdir(folder_path) if f.endswith(".png")]
-        markdown_content = "\n\n".join(
+        markdown_content = "# Model Metrics Plots\n" + "\n\n".join(
             [
-                f"### {os.path.splitext(f)[0]}]\n"
-                f"![image]({os.path.join(folder_path, f)})"
+                f"### {os.path.splitext(f)[0]}]\n![{os.path.splitext(f)[0]}]({os.path.join(folder_path, f)})"
                 for f in png_files
             ]
         )

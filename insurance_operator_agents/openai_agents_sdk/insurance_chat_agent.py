@@ -7,6 +7,8 @@ from mlflow.types.agent import (
     ChatAgentResponse,
     ChatContext,
 )
+from openai import AsyncOpenAI
+import os
 import mlflow
 from uuid import uuid4
 import asyncio
@@ -15,6 +17,7 @@ from unitycatalog.ai.core.databricks import (
     DatabricksFunctionClient,
     FunctionExecutionResult,
 )
+from agents import OpenAIChatCompletionsModel, set_tracing_disabled
 from agents import function_tool, RunContextWrapper
 from agents import Agent, Runner, set_tracing_disabled
 from agents.extensions.handoff_prompt import RECOMMENDED_PROMPT_PREFIX
@@ -23,7 +26,6 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("insurance_chat_agent")
 
-# os.environ["OPENAI_API_KEY"] = "{{secrets/databricks_token_qyu/OpenAi}}"
 mlflow.openai.autolog()
 
 class UserInfo(BaseModel):
@@ -70,8 +72,8 @@ claims_detail_retrieval_agent = Agent[UserInfo](
     tools=[
         search_claims_details_by_policy_no,
     ],
-    #model="gpt-4o",
-    model=OpenAIChatCompletionsModel(model=MODEL, openai_client=client)
+    model="gpt-4o",
+    #model=OpenAIChatCompletionsModel(model=MODEL, openai_client=client)
 )
 
 policy_qa_agent = Agent[UserInfo](
@@ -87,8 +89,8 @@ policy_qa_agent = Agent[UserInfo](
         "3. If you cannot answer the question, transfer back to the triage agent. \n"
     ),
     tools=[policy_docs_vector_search],
-    #model="gpt-4o",
-    model=OpenAIChatCompletionsModel(model=MODEL, openai_client=client)
+    model="gpt-4o",
+    #model=OpenAIChatCompletionsModel(model=MODEL, openai_client=client)
 )
 
 triage_agent = Agent[UserInfo](
@@ -100,8 +102,8 @@ triage_agent = Agent[UserInfo](
         "If the customer does not have anymore questions, wish them a goodbye and a good rest of their day. "
     ),
     handoffs=[claims_detail_retrieval_agent, policy_qa_agent],
-    #model="gpt-4o",
-    model=OpenAIChatCompletionsModel(model=MODEL, openai_client=client)
+    model="gpt-4o",
+    #model=OpenAIChatCompletionsModel(model=MODEL, openai_client=client)
 )
 
 class InsuranceChatAgent(ChatAgent):
