@@ -120,12 +120,12 @@ class InsuranceChatAgent(ChatAgent):
             }
         return self.conversation_state[conversation_id]
 
-    def _get_latest_user_message(selfself, messages: List[ChatAgentMessage]) -> str:
+    def _get_latest_user_message(self, messages: List[ChatAgentMessage]) -> str:
         """Extract the most recent user messages as input text"""
         for message in reversed(messages):
             if message.role == "user":
                 return message.content
-            return ""
+        return ""
 
     def _create_user_context(
             self,
@@ -177,17 +177,29 @@ class InsuranceChatAgent(ChatAgent):
             })
             agent_input = conversation_history
 
-        # Run the agent use asyncio
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+        # Run the agent using the current event loop if available, or create one if needed
         try:
-            result = loop.run_until_complete(
+            # Use existing event loop if it exists and is running
+            try:
+                loop = asyncio.get_event_loop()
+                if loop.is_closed():
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+            except RuntimeError:
+                # No event loop in thread, create new one
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                
+            # Run the agent
+            result = asyncio.run_coroutine_threadsafe(
                 Runner.run(
-                    starting_agent=self.starting_agent,
+                    starting_agent=current_agent,  # Use the current agent from state
                     input=agent_input,
                     context=user_info,
-                )
-            )
+                ),
+                loop
+            ).result()
+            
             # Update the state for the next turn
             # Store the updated conversation history from the result
             state["conversation_history"] = result.to_input_list()
@@ -195,9 +207,10 @@ class InsuranceChatAgent(ChatAgent):
             # Update the current agent based on which agent was last used
             if hasattr(result, "last_agent") and result.last_agent:
                 state["current_agent"] = result.last_agent
-
-        finally:
-            loop.close()
+                
+        except Exception as e:
+            logger.error(f"Error running agent: {e}")
+            raise
 
         # Convert the result to ChatAgentResponse format:
         return ChatAgentResponse(
@@ -216,7 +229,7 @@ class InsuranceChatAgent(ChatAgent):
         messages: list[ChatAgentMessage],
         context: Optional[ChatContext] = None,
         custom_inputs: Optional[Dict[str, Any]] = None
-    ) -> Generator[ChatAgentResponse, None, None]:
+    ) -> Generator[ChatAgentChunk, None, None]:
         response = self.predict(messages, context, custom_inputs)
 
         # Yield it as a single chunk
